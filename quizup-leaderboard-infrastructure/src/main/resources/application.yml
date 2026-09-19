@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: quizup-leaderboard
+  profiles:
+    default: local
+
+  flyway:
+    locations: classpath:db/migration/leaderboard
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+microservice:
+  swagger:
+    description: QuizUp Leaderboard Module - global and monthly rankings
+  websocket:
+    enabled: false
+
+logging:
+  level:
+    io.github.quizup: ${QUIZUP_LOG_LEVEL:INFO}
