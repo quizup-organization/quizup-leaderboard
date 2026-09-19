@@ -1,3 +1,9 @@
+## [1.0.1](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.0.0...v1.0.1) (2026-09-19)
+
+### Bug Fixes
+
+* add missing application-prod.yml (datasource, kafka, jwt) ([11810f0](https://github.com/quizup-organization/quizup-leaderboard/commit/11810f0faf1cea081addb28dec61fa59e3813054))
+
 ## 1.0.0 (2026-09-19)
 
 ### Features
