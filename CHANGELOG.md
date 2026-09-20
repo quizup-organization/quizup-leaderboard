@@ -1,3 +1,9 @@
+## [1.4.5](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.4.4...v1.4.5) (2026-09-20)
+
+### Bug Fixes
+
+* **deps:** bump quizup-sdk to 2.1.1 ([204d8f0](https://github.com/quizup-organization/quizup-leaderboard/commit/204d8f00d8ccc5f385cd8dc8b43b8fcb50ecfd54))
+
 ## [1.4.4](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.4.3...v1.4.4) (2026-09-20)
 
 ### Bug Fixes
