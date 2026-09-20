@@ -1,3 +1,9 @@
+## [1.3.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.2.0...v1.3.0) (2026-09-20)
+
+### Features
+
+* **observability:** leaderboard KPIs (XP recorded) + consume quizup-sdk 1.3.0 ([361d466](https://github.com/quizup-organization/quizup-leaderboard/commit/361d466fc4801889f5ba8ed8c7a2e262a6280521))
+
 ## [1.2.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.1.0...v1.2.0) (2026-09-20)
 
 ### Features
