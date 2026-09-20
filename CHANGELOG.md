@@ -1,3 +1,9 @@
+## [1.4.4](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.4.3...v1.4.4) (2026-09-20)
+
+### Bug Fixes
+
+* **config:** align prod service URLs with quizup-* names ([f266cc9](https://github.com/quizup-organization/quizup-leaderboard/commit/f266cc955a4b73b4b3244c34fcca3f36ce5484d4))
+
 ## [1.4.3](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.4.2...v1.4.3) (2026-09-20)
 
 ### Bug Fixes
