@@ -1,3 +1,13 @@
+## [1.5.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.4.5...v1.5.0) (2026-09-21)
+
+### Features
+
+* **leaderboard:** idempotent XP projection by (topic, user, game) ([5d03f28](https://github.com/quizup-organization/quizup-leaderboard/commit/5d03f280f195f7c1a5a653731523f9f197c03d33))
+
+### Bug Fixes
+
+* **observability:** keep readable console logs in local ([56f5372](https://github.com/quizup-organization/quizup-leaderboard/commit/56f537256dfb8125622c37ca1d8a41bbfcef6248))
+
 ## [1.4.5](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.4.4...v1.4.5) (2026-09-20)
 
 ### Bug Fixes
