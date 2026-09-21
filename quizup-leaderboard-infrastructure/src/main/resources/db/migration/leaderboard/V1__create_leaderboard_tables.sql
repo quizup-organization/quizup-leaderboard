@@ -20,3 +20,11 @@ CREATE INDEX IF NOT EXISTS idx_topic_lb_monthly ON topic_leaderboard_entry(topic
 CREATE INDEX IF NOT EXISTS idx_topic_lb_country ON topic_leaderboard_entry(topic_id, country, total_xp DESC);
 
 COMMENT ON TABLE topic_leaderboard_entry IS 'Classement par thème : XP all-time et XP du mois par (thème, joueur)';
+
+-- Journal des XP de classement déjà pris en compte (idempotence au rejeu).
+CREATE TABLE IF NOT EXISTS topic_leaderboard_awarded_game (
+    topic_id VARCHAR(255) NOT NULL,
+    user_id  VARCHAR(255) NOT NULL,
+    game_id  VARCHAR(255) NOT NULL,
+    PRIMARY KEY (topic_id, user_id, game_id)
+);

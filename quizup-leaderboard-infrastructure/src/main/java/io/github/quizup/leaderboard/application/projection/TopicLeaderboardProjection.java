@@ -2,6 +2,7 @@ package io.github.quizup.leaderboard.application.projection;
 
 import io.github.quizup.leaderboard.domain.event.LeaderboardEvent;
 import io.github.quizup.leaderboard.domain.model.TopicLeaderboardEntry;
+import io.github.quizup.leaderboard.domain.port.out.LeaderboardAwardedGameRepositoryPort;
 import io.github.quizup.leaderboard.domain.port.out.LeaderboardRepositoryPort;
 import org.axonframework.eventhandling.EventHandler;
 import org.slf4j.Logger;
@@ -19,14 +20,22 @@ public class TopicLeaderboardProjection {
     private static final Logger logger = LoggerFactory.getLogger(TopicLeaderboardProjection.class);
 
     private final LeaderboardRepositoryPort leaderboardRepositoryPort;
+    private final LeaderboardAwardedGameRepositoryPort awardedGameRepositoryPort;
 
-    public TopicLeaderboardProjection(LeaderboardRepositoryPort leaderboardRepositoryPort) {
+    public TopicLeaderboardProjection(LeaderboardRepositoryPort leaderboardRepositoryPort,
+                                      LeaderboardAwardedGameRepositoryPort awardedGameRepositoryPort) {
         this.leaderboardRepositoryPort = leaderboardRepositoryPort;
+        this.awardedGameRepositoryPort = awardedGameRepositoryPort;
     }
 
     @EventHandler
     @Transactional
     public void on(LeaderboardEvent.XpRecordedEvent event) {
+        // Idempotence par clé métier (topicId, userId, gameId) : un rejeu ne recompte pas l'XP.
+        if (!awardedGameRepositoryPort.record(event.topicId(), event.userId(), event.gameId())) {
+            return;
+        }
+
         TopicLeaderboardEntry current = leaderboardRepositoryPort
                 .findByTopicAndUser(event.topicId(), event.userId())
                 .orElseGet(() -> TopicLeaderboardEntry.empty(event.topicId(), event.userId()));
