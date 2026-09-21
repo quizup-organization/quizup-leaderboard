@@ -35,7 +35,9 @@ public class LeaderboardSaga {
     @StartSaga
     @SagaEventHandler(associationProperty = "userId")
     public void on(ProgressionEvent.XpAwardedEvent event) {
-        commandGateway.send(new LeaderboardCommand.RecordXpCommand(
+        // sendAndWait : en cas d'échec (dispatch, agrégat), l'exception remonte et Axon
+        // réessaie l'événement (le token n'avance pas) au lieu de perdre silencieusement l'XP.
+        commandGateway.sendAndWait(new LeaderboardCommand.RecordXpCommand(
                 LeaderboardRules.entryId(event.topicId(), event.userId()),
                 event.topicId(),
                 event.userId(),
