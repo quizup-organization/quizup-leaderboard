@@ -1,3 +1,9 @@
+## [1.5.1](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.5.0...v1.5.1) (2026-09-21)
+
+### Bug Fixes
+
+* **saga:** await RecordXpCommand so dispatch failures are retried (no XP loss) ([1b7aa0d](https://github.com/quizup-organization/quizup-leaderboard/commit/1b7aa0df94010466dbbf60ed4446cc8b1b0ae575))
+
 ## [1.5.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.4.5...v1.5.0) (2026-09-21)
 
 ### Features
