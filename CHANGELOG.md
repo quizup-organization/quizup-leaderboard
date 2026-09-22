@@ -1,3 +1,9 @@
+## [1.6.4](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.6.3...v1.6.4) (2026-09-22)
+
+### Bug Fixes
+
+* **quizup-leaderboard:** upgrade quizup-parent to 2.3.4 ([ea017ad](https://github.com/quizup-organization/quizup-leaderboard/commit/ea017adac749974ca1bfa77b010c4b21898b6e98))
+
 ## [1.6.3](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.6.2...v1.6.3) (2026-09-22)
 
 ### Bug Fixes
