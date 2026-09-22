@@ -1,3 +1,9 @@
+## [1.6.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.5.1...v1.6.0) (2026-09-22)
+
+### Features
+
+* **leaderboard:** explicit Axon processing groups ([54a4277](https://github.com/quizup-organization/quizup-leaderboard/commit/54a4277fdf853eef76d13ecb6ca341cd6e785541))
+
 ## [1.5.1](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.5.0...v1.5.1) (2026-09-21)
 
 ### Bug Fixes
