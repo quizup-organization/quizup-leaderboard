@@ -4,6 +4,7 @@ import io.github.quizup.leaderboard.domain.event.LeaderboardEvent;
 import io.github.quizup.leaderboard.domain.model.TopicLeaderboardEntry;
 import io.github.quizup.leaderboard.domain.port.out.LeaderboardAwardedGameRepositoryPort;
 import io.github.quizup.leaderboard.domain.port.out.LeaderboardRepositoryPort;
+import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
  * par thème (XP all-time + XP du mois courant).
  */
 @Component
+@ProcessingGroup("topic-leaderboard-projection")
 public class TopicLeaderboardProjection {
 
     private static final Logger logger = LoggerFactory.getLogger(TopicLeaderboardProjection.class);

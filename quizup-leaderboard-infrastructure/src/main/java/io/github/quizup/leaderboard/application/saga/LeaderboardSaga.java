@@ -6,6 +6,7 @@ import io.github.quizup.leaderboard.domain.model.PlayerIdentity;
 import io.github.quizup.leaderboard.domain.port.out.LeaderboardProfilePort;
 import io.github.quizup.profile.domain.event.ProgressionEvent;
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.axonframework.config.ProcessingGroup;
 import org.axonframework.modelling.saga.SagaEventHandler;
 import org.axonframework.modelling.saga.SagaLifecycle;
 import org.axonframework.modelling.saga.StartSaga;
@@ -22,6 +23,7 @@ import java.util.List;
  * {@code gameId} est portée par l'agrégat.
  */
 @Saga
+@ProcessingGroup("leaderboard-saga")
 public class LeaderboardSaga {
 
     private static final Logger logger = LoggerFactory.getLogger(LeaderboardSaga.class);
