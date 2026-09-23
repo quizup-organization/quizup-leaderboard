@@ -39,7 +39,7 @@ public class LeaderboardController {
             @RequestParam(defaultValue = "all-time") String period,
             @RequestParam(defaultValue = "world") String scope,
             @RequestParam(defaultValue = "50") int limit) {
-        int bounded = Math.min(Math.max(limit, 1), MAX_LIMIT);
+        int bounded = Math.clamp(limit, 1, MAX_LIMIT);
         String requesterId = SecurityHelper.getUserId();
 
         return getLeaderboardUseCase.topByTopic(
