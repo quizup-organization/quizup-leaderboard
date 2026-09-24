@@ -1,3 +1,9 @@
+## [1.6.7](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.6.6...v1.6.7) (2026-09-24)
+
+### Bug Fixes
+
+* **deps:** bump quizup-parent to 2.4.4 (typed PageResult over query transport) ([bf5a99d](https://github.com/quizup-organization/quizup-leaderboard/commit/bf5a99d267e051c07b5d032696d13156a2dbbdbf))
+
 ## [1.6.6](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.6.5...v1.6.6) (2026-09-24)
 
 ### Bug Fixes
