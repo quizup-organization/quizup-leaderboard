@@ -1,3 +1,15 @@
+## [2.0.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.6.7...v2.0.0) (2026-09-25)
+
+### ⚠ BREAKING CHANGES
+
+* **leaderboard:** the service no longer exposes its REST API (the BFF is the
+sole surface); search/query contracts use the SDK SearchRequest/SearchResponse
+DTOs and the social domain contract (2.0.0).
+
+### Features
+
+* **leaderboard:** headless service + SDK search contracts ([54db365](https://github.com/quizup-organization/quizup-leaderboard/commit/54db365f49bfda00fd170224c8d9d21d9f70d7ce))
+
 ## [1.6.7](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.6.6...v1.6.7) (2026-09-24)
 
 ### Bug Fixes
