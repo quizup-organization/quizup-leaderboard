@@ -24,22 +24,12 @@ abonnements via `quizup-social` (`UserFollowerQuery.GetFollowingIdsQuery`), pays
 
 ---
 
-## 2. Endpoints REST
+## 2. Surface (headless)
 
-### `LeaderboardController` — `/api/leaderboard` (`@CrossOrigin`)
-
-| Méthode | Chemin                                      | Handler                     | Response                                 |
-|---------|---------------------------------------------|-----------------------------|------------------------------------------|
-| GET     | `/api/leaderboard/topics/{topicId}`         | `topByTopic(...)`           | `List<TopicLeaderboardEntryResponse>`    |
-| GET     | `/api/leaderboard/topics/{topicId}/me`      | `myRank(...)`               | `TopicLeaderboardEntryResponse` (204 si aucun duel dans le thème) |
-
-Query params : `period` = `all-time` (défaut) · `monthly` ; `limit` (1–100, défaut 50).
-
-**DTO** : `TopicLeaderboardEntryResponse(rank, topicId, userId, totalXp, monthlyXp, level)`
-— le nom d'affichage n'est pas renvoyé : le frontend le résout via `quizup-profile`.
-
----
-
+Service **headless** : aucun contrôleur REST ni WebSocket. La surface applicative unique est le
+**`quizup-bff`** (`/api/**` + `/ws`) ; il interroge ce service via le **query bus** Axon et consomme
+ses événements. Les handlers de requête/commande, sagas et projections restent la seule surface
+exposée par le service.
 ## 3. Use cases (ports entrants — `domain/port/in/`)
 
 - `GetLeaderboardUseCase` — top d'un thème (all-time/mensuel) + rang d'un joueur.
