@@ -1,6 +1,7 @@
 package io.github.quizup.leaderboard.application.service;
 
 import io.github.quizup.microservice.core.infrastructure.axon.QueryResponseTypes;
+import io.github.quizup.leaderboard.domain.model.LeaderboardPage;
 import io.github.quizup.leaderboard.domain.model.LeaderboardRank;
 import io.github.quizup.leaderboard.domain.model.LeaderboardRules;
 import io.github.quizup.leaderboard.domain.model.LeaderboardScope;
@@ -16,18 +17,15 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Service applicatif — implémente {@link GetLeaderboardUseCase}.
  *
- * <p>Résout la portée (monde / amis / pays) puis enrichit les entrées avec
- * l'identité publique (quizup-profile).</p>
+ * <p>Résout la portée (monde / amis / pays) ; l'identité et le niveau des entrées sont déjà
+ * dénormalisés dans le read model (aucune résolution de profil par page).</p>
  */
 @Service
 public class LeaderboardQueryService implements GetLeaderboardUseCase {
@@ -47,6 +45,7 @@ public class LeaderboardQueryService implements GetLeaderboardUseCase {
     @Override
     public CompletableFuture<List<TopicLeaderboardEntry>> topByTopic(String topicId,
                                                                      boolean monthly,
+                                                                     String month,
                                                                      int limit,
                                                                      LeaderboardScope scope,
                                                                      String requesterId) {
@@ -54,25 +53,33 @@ public class LeaderboardQueryService implements GetLeaderboardUseCase {
 
         return queryGateway.query(
                         new LeaderboardQuery.TopByTopicQuery(
-                                topicId, monthly, LeaderboardRules.currentMonth(), limit,
+                                topicId, monthly, monthOrCurrent(monthly, month), 0, limit,
                                 filter.memberIds(), filter.country()),
-                        QueryResponseTypes.multipleInstancesOf(TopicLeaderboardEntry.class))
-                .thenApply(this::enrich);
+                        QueryResponseTypes.instanceOf(LeaderboardPage.class))
+                .thenApply(LeaderboardPage::entries);
     }
 
     @Override
     public CompletableFuture<Optional<LeaderboardRank>> rankOf(String topicId,
                                                                String userId,
                                                                boolean monthly,
+                                                               String month,
                                                                LeaderboardScope scope) {
         ScopeFilter filter = resolveScope(scope, userId);
 
         return queryGateway.query(
-                        new LeaderboardQuery.GetTopicRankQuery(
-                                topicId, userId, monthly, LeaderboardRules.currentMonth(),
-                                filter.memberIds(), filter.country()),
-                        QueryResponseTypes.optionalInstanceOf(LeaderboardRank.class))
-                .thenApply(optional -> optional.map(this::enrich));
+                new LeaderboardQuery.GetTopicRankQuery(
+                        topicId, userId, monthly, monthOrCurrent(monthly, month),
+                        filter.memberIds(), filter.country()),
+                QueryResponseTypes.optionalInstanceOf(LeaderboardRank.class));
+    }
+
+    /** Un classement mensuel sans mois explicite porte sur le mois courant. */
+    private String monthOrCurrent(boolean monthly, String month) {
+        if (!monthly) {
+            return month;
+        }
+        return month == null || month.isBlank() ? LeaderboardRules.currentMonth() : month;
     }
 
     private ScopeFilter resolveScope(LeaderboardScope scope, String requesterId) {
@@ -92,42 +99,7 @@ public class LeaderboardQueryService implements GetLeaderboardUseCase {
                 .findFirst()
                 .orElse(null);
 
-        return new ScopeFilter(null, country);
-    }
-
-    private List<TopicLeaderboardEntry> enrich(List<TopicLeaderboardEntry> entries) {
-        if (entries.isEmpty()) {
-            return entries;
-        }
-
-        Map<String, PlayerIdentity> identities = identitiesOf(
-                entries.stream().map(TopicLeaderboardEntry::userId).distinct().toList());
-
-        return entries.stream()
-                .map(entry -> applyIdentity(entry, identities.get(entry.userId())))
-                .toList();
-    }
-
-    private LeaderboardRank enrich(LeaderboardRank ranked) {
-        PlayerIdentity identity = identitiesOf(List.of(ranked.entry().userId()))
-                .get(ranked.entry().userId());
-
-        return new LeaderboardRank(applyIdentity(ranked.entry(), identity), ranked.rank());
-    }
-
-    private Map<String, PlayerIdentity> identitiesOf(List<String> userIds) {
-        return leaderboardProfilePort.findIdentities(userIds).stream()
-                .collect(Collectors.toMap(PlayerIdentity::userId, Function.identity(), (a, b) -> a));
-    }
-
-    private TopicLeaderboardEntry applyIdentity(TopicLeaderboardEntry entry, PlayerIdentity identity) {
-        if (identity == null) {
-            return entry;
-        }
-
-        return entry.toBuilder()
-                .displayName(identity.displayName())
-                .build();
+        return country == null ? new ScopeFilter(null, null) : new ScopeFilter(null, country);
     }
 
     private record ScopeFilter(List<String> memberIds, String country) {

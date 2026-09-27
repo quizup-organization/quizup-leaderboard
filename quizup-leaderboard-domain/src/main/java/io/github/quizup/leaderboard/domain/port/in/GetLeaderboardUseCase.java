@@ -14,9 +14,13 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface GetLeaderboardUseCase {
 
+    /**
+     * @param month mois {@code YYYY-MM} pour le classement mensuel ; {@code null} = mois courant.
+     */
     CompletableFuture<List<TopicLeaderboardEntry>> topByTopic(
             String topicId,
             boolean monthly,
+            String month,
             int limit,
             LeaderboardScope scope,
             String requesterId
@@ -26,6 +30,7 @@ public interface GetLeaderboardUseCase {
             String topicId,
             String userId,
             boolean monthly,
+            String month,
             LeaderboardScope scope
     );
 }

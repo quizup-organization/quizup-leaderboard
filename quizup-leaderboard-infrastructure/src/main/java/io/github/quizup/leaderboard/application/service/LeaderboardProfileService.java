@@ -14,6 +14,8 @@ import java.util.List;
 
 /**
  * Adaptateur sortant inter-module : résout les identités via quizup-profile.
+ * Une seule requête batch {@link ProfileQuery.GetProfilesByIdsQuery} ; les profils introuvables
+ * sont omis (l'appelant conserve l'identité déjà dénormalisée).
  */
 @Service
 public class LeaderboardProfileService implements LeaderboardProfilePort {
@@ -28,22 +30,24 @@ public class LeaderboardProfileService implements LeaderboardProfilePort {
 
     @Override
     public List<PlayerIdentity> findIdentities(List<String> userIds) {
-        return userIds.stream()
-                .map(this::resolve)
-                .toList();
-    }
+        if (userIds == null || userIds.isEmpty()) {
+            return List.of();
+        }
 
-    private PlayerIdentity resolve(String userId) {
         try {
-            Profile profile = queryGateway.query(
-                    new ProfileQuery.GetProfileQuery(userId),
-                    QueryResponseTypes.instanceOf(Profile.class)
-            ).join();
-
-            return new PlayerIdentity(userId, profile.displayName(), profile.country());
+            return queryGateway.query(
+                            new ProfileQuery.GetProfilesByIdsQuery(userIds),
+                            QueryResponseTypes.multipleInstancesOf(Profile.class))
+                    .join().stream()
+                    .map(profile -> new PlayerIdentity(
+                            profile.userId(),
+                            profile.displayName(),
+                            profile.country(),
+                            profile.avatarOptions()))
+                    .toList();
         } catch (Exception exception) {
-            logger.warn("Impossible de résoudre le profil {} : {}", userId, exception.getMessage());
-            return new PlayerIdentity(userId, null, null);
+            logger.warn("Impossible de résoudre les profils {} : {}", userIds, exception.getMessage());
+            return List.of();
         }
     }
 }

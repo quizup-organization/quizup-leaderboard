@@ -5,7 +5,7 @@ import java.util.List;
 public interface LeaderboardQuery {
 
     /**
-     * Top d'un thème. {@code monthly} = classement du mois courant, sinon all-time.
+     * Page du classement d'un thème. {@code monthly} = classement du mois courant, sinon all-time.
      * {@code memberIds} et {@code country} filtrent la portée (amis / pays) —
      * {@code null} = pas de filtre (monde).
      */
@@ -13,7 +13,8 @@ public interface LeaderboardQuery {
             String topicId,
             boolean monthly,
             String month,
-            int limit,
+            int page,
+            int size,
             List<String> memberIds,
             String country
     ) implements LeaderboardQuery {

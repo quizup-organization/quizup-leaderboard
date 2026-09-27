@@ -2,11 +2,7 @@ package io.github.quizup.leaderboard.application.service;
 
 import io.github.quizup.microservice.core.infrastructure.axon.QueryResponseTypes;
 import io.github.quizup.leaderboard.domain.port.out.LeaderboardFollowingPort;
-import io.github.quizup.microservice.core.domain.model.search.FilterOperator;
-import io.github.quizup.microservice.core.infrastructure.in.api.request.FilterRequest;
-import io.github.quizup.microservice.core.infrastructure.in.api.request.PageRequest;
-import io.github.quizup.microservice.core.infrastructure.in.api.request.SearchRequest;
-import io.github.quizup.microservice.core.infrastructure.in.api.response.SearchResponse;
+import io.github.quizup.social.domain.model.FollowDirection;
 import io.github.quizup.social.domain.model.UserFollower;
 import io.github.quizup.social.domain.query.UserFollowerQuery;
 import org.axonframework.queryhandling.QueryGateway;
@@ -17,8 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Adaptateur sortant inter-module : joueurs suivis via quizup-social, en réutilisant la
- * **recherche** ({@code SearchUserFollowerQuery} + filtre {@code followerId}) — pas de query dédiée.
+ * Adaptateur sortant inter-module : joueurs suivis via quizup-social, par la **query dédiée**
+ * {@link UserFollowerQuery.GetUserFollowsQuery} (plus aucune utilisation de la recherche).
  */
 @Service
 public class LeaderboardFollowingService implements LeaderboardFollowingPort {
@@ -35,18 +31,10 @@ public class LeaderboardFollowingService implements LeaderboardFollowingPort {
     @Override
     public List<String> getFollowingIds(String userId) {
         try {
-            SearchRequest request = new SearchRequest(
-                    List.of(new FilterRequest("followerId", FilterOperator.EQUALS, userId, null, null)),
-                    List.of(),
-                    new PageRequest(0, FOLLOWING_LIMIT)
-            );
-
-            SearchResponse<UserFollower> page = queryGateway.query(
-                    new UserFollowerQuery.SearchUserFollowerQuery(request),
-                    QueryResponseTypes.searchResponseOf(UserFollower.class)
-            ).join();
-
-            return page.content().stream()
+            return queryGateway.query(
+                            new UserFollowerQuery.GetUserFollowsQuery(userId, FollowDirection.FOLLOWING, FOLLOWING_LIMIT),
+                            QueryResponseTypes.multipleInstancesOf(UserFollower.class))
+                    .join().stream()
                     .map(UserFollower::followedId)
                     .distinct()
                     .toList();

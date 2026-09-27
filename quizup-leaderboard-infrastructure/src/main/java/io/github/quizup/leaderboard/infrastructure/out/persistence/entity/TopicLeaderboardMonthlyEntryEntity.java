@@ -11,20 +11,20 @@ import lombok.Setter;
 import java.time.Instant;
 
 /**
- * TopicLeaderboardEntryEntity — projection JPA du classement **all-time** d'un joueur
- * dans un thème : XP cumulée + identité/niveau dénormalisés.
+ * TopicLeaderboardMonthlyEntryEntity — projection JPA du classement **mensuel** d'un joueur
+ * dans un thème pour un mois donné ({@code YYYY-MM}) : l'historique des mois est conservé.
  */
 @Setter
 @Getter
 @Entity
-@Table(name = "topic_leaderboard_entry", indexes = {
-        @Index(name = "idx_topic_lb_all_time", columnList = "topic_id,total_xp"),
-        @Index(name = "idx_topic_lb_country", columnList = "topic_id,country,total_xp")
+@Table(name = "topic_leaderboard_monthly_entry", indexes = {
+        @Index(name = "idx_topic_lb_monthly_xp", columnList = "topic_id,month,monthly_xp"),
+        @Index(name = "idx_topic_lb_monthly_country", columnList = "topic_id,month,country,monthly_xp")
 })
-public class TopicLeaderboardEntryEntity {
+public class TopicLeaderboardMonthlyEntryEntity {
 
     @Id
-    @Column(name = "entry_id", length = 520, nullable = false)
+    @Column(name = "entry_id", length = 550, nullable = false)
     private String entryId;
 
     @Column(name = "topic_id", length = 255, nullable = false)
@@ -33,8 +33,11 @@ public class TopicLeaderboardEntryEntity {
     @Column(name = "user_id", length = 255, nullable = false)
     private String userId;
 
-    @Column(name = "total_xp", nullable = false)
-    private int totalXp;
+    @Column(name = "month", length = 7, nullable = false)
+    private String month;
+
+    @Column(name = "monthly_xp", nullable = false)
+    private int monthlyXp;
 
     @Column(name = "level", nullable = false)
     private int level;

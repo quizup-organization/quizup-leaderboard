@@ -31,11 +31,19 @@ public final class LeaderboardRules {
     }
 
     /**
-     * Identifiant d'agrégat d'une entrée de classement (thème + joueur).
+     * Identifiant de l'entrée all-time d'un joueur dans un thème.
      * Namespacé : un même joueur a une entrée par thème.
      */
     public static String entryId(String topicId, String userId) {
         return topicId + "::" + userId;
+    }
+
+    /**
+     * Identifiant d'une entrée mensuelle (thème + joueur + mois). L'historique des mois est
+     * conservé : chaque mois a sa propre entrée, jamais écrasée.
+     */
+    public static String monthlyEntryId(String topicId, String userId, String month) {
+        return topicId + "::" + userId + "::" + month;
     }
 
     /** Niveau atteint pour une XP totale cumulée (démarre à 1). */

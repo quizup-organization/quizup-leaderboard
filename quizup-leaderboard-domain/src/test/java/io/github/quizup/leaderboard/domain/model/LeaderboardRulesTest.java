@@ -21,4 +21,12 @@ class LeaderboardRulesTest {
         assertEquals(2, LeaderboardRules.levelFor(100));
         assertEquals(3, LeaderboardRules.levelFor(400));
     }
+
+    @Test
+    void monthlyEntryId_isNamespacedByMonth() {
+        assertEquals("topic-1::user-1::2026-09",
+                LeaderboardRules.monthlyEntryId("topic-1", "user-1", "2026-09"));
+        assertEquals("topic-1::user-1",
+                LeaderboardRules.entryId("topic-1", "user-1"));
+    }
 }

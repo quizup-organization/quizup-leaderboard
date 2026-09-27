@@ -15,7 +15,8 @@ excellent en géographie ne fait pas monter au classement cinéma). L'XP d'un du
 
 Deux horizons :
 - **All-time** : XP cumulée dans le thème (détermine le niveau et la position).
-- **Mensuel** : XP du mois courant, réinitialisée au changement de mois (clé `YYYY-MM`).
+- **Mensuel** : XP du mois (`YYYY-MM`), **historique conservé** — chaque mois a sa propre ligne,
+  consultable via le paramètre `month` de la surface BFF.
 
 Portées : **monde**, **abonnements** (`scope=following` / alias `friends`) et **pays** —
 abonnements via `quizup-social` (`UserFollowerQuery.GetFollowingIdsQuery`), pays via le profil.
@@ -41,18 +42,39 @@ exposée par le service.
 
 ## 4. Dépendances inter-services
 
-| Port / consommateur | Service source    | Event Axon consommé            |
-|---------------------|-------------------|--------------------------------|
-| `LeaderboardSaga`   | `quizup-profile`  | `ProgressionEvent.XpAwardedEvent` |
+| Consommateur                  | Service source    | Event Axon consommé                 |
+|-------------------------------|-------------------|-------------------------------------|
+| `TopicLeaderboardProjection`  | `quizup-profile`  | `ProgressionEvent.XpAwardedEvent`   |
+| `TopicLeaderboardProjection`  | `quizup-profile`  | `ProfileEvent.ProfileUpdatedEvent`  |
 
-Dépendance Maven `quizup-profile-domain` (artifact). La saga envoie un
-`LeaderboardCommand.RecordXpCommand` (idempotent par `gameId`) ; l'agrégat
-`TopicLeaderboardEntryAggregate` est identifié par `topicId::userId` (namespacé).
+Dépendance Maven `quizup-profile-domain` (artifact). **Plus de saga ni d'agrégat relais** : la
+projection consomme directement les événements profile (pattern `ActivityProjection`), écrit
+l'entrée all-time + l'entrée mensuelle, et l'idempotence par `(topicId, userId, gameId)` est portée
+par le journal `topic_leaderboard_awarded_game`. Aucun événement local n'est produit : l'event
+store du service ne croît plus avec les duels (lot C3, rétention résolue par suppression de
+l'écriture inutile).
+
+**Les duels contre bot (`XpAwardedEvent.botGame`) sont ignorés** : ils comptent pour l'XP, le
+niveau et les badges du joueur, jamais pour le classement.
+
+### Modèle de lecture (lot C3)
+
+- **Historique mensuel** : table `topic_leaderboard_monthly_entry` par `(thème, joueur, mois)` —
+  chaque mois a sa ligne, jamais écrasée. `TopByTopicQuery`/`GetTopicRankQuery` prennent un
+  `month` (`YYYY-MM`), `null` = mois courant. Backfill du mois courant à la migration V2.
+- **Identité/niveau dénormalisés** : `display_name`, `avatar_options`, `country` et `level` sont
+  stockés sur les entrées (all-time et mensuelles) — plus aucune résolution de profil par page
+  côté BFF. `ProfileUpdatedEvent` rafraîchit l'identité sur toutes les entrées du joueur
+  (`refreshIdentity`), le pays ne fige donc jamais ; le niveau est recalculé à chaque XP.
 
 ### Enrichissements front
 
 - **Portées** `scope=world|following|country` (alias historique `friends`) : abonnements via
-  `LeaderboardFollowingPort` (`quizup-social-domain`, `SearchUserFollowerQuery` filtrée sur
-  `followerId`), pays via `country` dénormalisé sur l'entrée (résolu par la saga via
-  `LeaderboardProfilePort`). Le rang est recalculé dans la portée (scan borné).
-- `TopicLeaderboardEntryResponse` renvoie `displayName` + `country` (résolus via profile).
+  `LeaderboardFollowingPort` (`quizup-social-domain`, query dédiée `GetUserFollowsQuery`), pays
+  filtré sur le `country` dénormalisé ; la portée pays résout uniquement le pays du demandeur via
+  `LeaderboardProfilePort` (requête batch `GetProfilesByIdsQuery`).
+- **Pagination et rang sans scan borné** : `TopByTopicQuery(topicId, monthly, month, page, size,
+  memberIds, country)` → `LeaderboardPage` (Specification dynamique) ; `GetTopicRankQuery` renvoie
+  le rang **au-delà du top 100** via un `COUNT` des entrées classées avant le joueur
+  (XP supérieure, départage `userId` identique à l'ordre de la page).
+- `SearchLobbyQuery`/recherches restent pour les futures surfaces d'administration.

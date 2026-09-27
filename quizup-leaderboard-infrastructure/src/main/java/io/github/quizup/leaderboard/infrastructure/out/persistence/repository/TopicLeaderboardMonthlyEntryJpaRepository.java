@@ -1,6 +1,6 @@
 package io.github.quizup.leaderboard.infrastructure.out.persistence.repository;
 
-import io.github.quizup.leaderboard.infrastructure.out.persistence.entity.TopicLeaderboardEntryEntity;
+import io.github.quizup.leaderboard.infrastructure.out.persistence.entity.TopicLeaderboardMonthlyEntryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -11,15 +11,17 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface TopicLeaderboardEntryJpaRepository
-        extends JpaRepository<TopicLeaderboardEntryEntity, String>,
-        JpaSpecificationExecutor<TopicLeaderboardEntryEntity> {
+public interface TopicLeaderboardMonthlyEntryJpaRepository
+        extends JpaRepository<TopicLeaderboardMonthlyEntryEntity, String>,
+        JpaSpecificationExecutor<TopicLeaderboardMonthlyEntryEntity> {
 
-    Optional<TopicLeaderboardEntryEntity> findByTopicIdAndUserId(String topicId, String userId);
+    Optional<TopicLeaderboardMonthlyEntryEntity> findByTopicIdAndUserIdAndMonth(String topicId,
+                                                                                String userId,
+                                                                                String month);
 
     @Modifying
     @Query("""
-            update TopicLeaderboardEntryEntity entry
+            update TopicLeaderboardMonthlyEntryEntity entry
                set entry.displayName = :displayName,
                    entry.country = :country,
                    entry.avatarOptions = :avatarOptions
