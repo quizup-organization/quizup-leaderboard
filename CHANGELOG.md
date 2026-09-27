@@ -1,3 +1,9 @@
+## [2.1.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v2.0.0...v2.1.0) (2026-09-27)
+
+### Features
+
+* **leaderboard:** monthly history, denormalized identity and direct profile-event projection ([40bd521](https://github.com/quizup-organization/quizup-leaderboard/commit/40bd52162edc6d04d218485d8fd9f07add7c18de))
+
 ## [2.0.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v1.6.7...v2.0.0) (2026-09-25)
 
 ### ⚠ BREAKING CHANGES
