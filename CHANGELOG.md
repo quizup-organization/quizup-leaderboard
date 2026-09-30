@@ -1,3 +1,13 @@
+## [3.0.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v2.1.0...v3.0.0) (2026-09-30)
+
+### ⚠ BREAKING CHANGES
+
+* **leaderboard:** denormalized identity renamed to pseudonym; per-field profile events replace ProfileUpdatedEvent (V2 migration edited, DB reset required); pins SDK 4.1.0, profile 3.0.0, social 3.0.0.
+
+### Code Refactoring
+
+* **leaderboard:** pseudonym and per-field profile events ([7dd5988](https://github.com/quizup-organization/quizup-leaderboard/commit/7dd59884a6a78c7c4a1ea784de62f743413457e6))
+
 ## [2.1.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v2.0.0...v2.1.0) (2026-09-27)
 
 ### Features
