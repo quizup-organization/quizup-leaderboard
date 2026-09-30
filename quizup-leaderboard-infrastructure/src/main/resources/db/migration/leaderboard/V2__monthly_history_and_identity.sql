@@ -3,11 +3,11 @@
 -- Le classement mensuel quitte `topic_leaderboard_entry` (où chaque nouveau mois
 -- écrasait le précédent) pour une table dédiée par (thème, joueur, mois) : les mois
 -- passés restent consultables. L'entrée all-time porte désormais l'identité publique
--- dénormalisée (display_name, avatar_options) et le niveau, rafraîchis par les
+-- dénormalisée (pseudonym, avatar_options) et le niveau, rafraîchis par les
 -- événements profile — plus aucune résolution de profil au fil des pages.
 
 ALTER TABLE topic_leaderboard_entry
-    ADD COLUMN IF NOT EXISTS display_name VARCHAR(255),
+    ADD COLUMN IF NOT EXISTS pseudonym VARCHAR(255),
     ADD COLUMN IF NOT EXISTS avatar_options TEXT,
     ADD COLUMN IF NOT EXISTS level INTEGER NOT NULL DEFAULT 1;
 
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS topic_leaderboard_monthly_entry (
     month VARCHAR(7) NOT NULL,
     monthly_xp INTEGER NOT NULL DEFAULT 0,
     level INTEGER NOT NULL DEFAULT 1,
-    display_name VARCHAR(255),
+    pseudonym VARCHAR(255),
     avatar_options TEXT,
     country VARCHAR(60),
     updated_at TIMESTAMP NOT NULL,
@@ -37,9 +37,9 @@ CREATE INDEX IF NOT EXISTS idx_topic_lb_monthly_country
     ON topic_leaderboard_monthly_entry(topic_id, month, country, monthly_xp DESC);
 
 INSERT INTO topic_leaderboard_monthly_entry
-    (entry_id, topic_id, user_id, month, monthly_xp, level, display_name, avatar_options, country, updated_at)
+    (entry_id, topic_id, user_id, month, monthly_xp, level, pseudonym, avatar_options, country, updated_at)
 SELECT topic_id || '::' || user_id || '::' || month,
-       topic_id, user_id, month, monthly_xp, level, display_name, avatar_options, country, updated_at
+       topic_id, user_id, month, monthly_xp, level, pseudonym, avatar_options, country, updated_at
 FROM topic_leaderboard_entry
 WHERE month IS NOT NULL AND monthly_xp > 0
 ON CONFLICT (entry_id) DO NOTHING;

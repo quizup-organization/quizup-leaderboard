@@ -20,13 +20,27 @@ public interface TopicLeaderboardEntryJpaRepository
     @Modifying
     @Query("""
             update TopicLeaderboardEntryEntity entry
-               set entry.displayName = :displayName,
-                   entry.country = :country,
-                   entry.avatarOptions = :avatarOptions
+               set entry.pseudonym = :pseudonym
              where entry.userId = :userId
             """)
-    int refreshIdentity(@Param("userId") String userId,
-                        @Param("displayName") String displayName,
-                        @Param("country") String country,
-                        @Param("avatarOptions") String avatarOptions);
+    int refreshPseudonym(@Param("userId") String userId,
+                         @Param("pseudonym") String pseudonym);
+
+    @Modifying
+    @Query("""
+            update TopicLeaderboardEntryEntity entry
+               set entry.country = :country
+             where entry.userId = :userId
+            """)
+    int refreshCountry(@Param("userId") String userId,
+                       @Param("country") String country);
+
+    @Modifying
+    @Query("""
+            update TopicLeaderboardEntryEntity entry
+               set entry.avatarOptions = :avatarOptions
+             where entry.userId = :userId
+            """)
+    int refreshAvatarOptions(@Param("userId") String userId,
+                             @Param("avatarOptions") String avatarOptions);
 }

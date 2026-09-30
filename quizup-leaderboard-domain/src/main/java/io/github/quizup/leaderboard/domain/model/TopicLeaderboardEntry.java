@@ -22,7 +22,7 @@ public record TopicLeaderboardEntry(
         String month,
         int level,
         Instant updatedAt,
-        String displayName,
+        String pseudonym,
         String avatarOptions,
         String country
 ) {

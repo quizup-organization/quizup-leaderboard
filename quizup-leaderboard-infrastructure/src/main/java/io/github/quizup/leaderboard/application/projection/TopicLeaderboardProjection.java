@@ -24,8 +24,8 @@ import java.util.Optional;
  *
  * <p>Consomme directement {@link ProgressionEvent.XpAwardedEvent} (l'ancien agrégat relais a été
  * supprimé : plus aucun événement local n'est écrit, l'event store ne croît plus avec les duels).
- * Les duels contre bot sont ignorés. L'identité publique (nom, avatar, pays) et le niveau sont
- * dénormalisés dans le read model ; {@link ProfileEvent.ProfileUpdatedEvent} les rafraîchit pour
+ * Les duels contre bot sont ignorés. L'identité publique (pseudonyme, avatar, pays) et le niveau
+ * sont dénormalisés dans le read model ; les événements de champ du profil les rafraîchissent pour
  * qu'un changement de profil ne fige jamais le classement.</p>
  */
 @Component
@@ -72,7 +72,7 @@ public class TopicLeaderboardProjection {
         leaderboardRepositoryPort.saveAllTime(allTime.toBuilder()
                 .totalXp(totalXp)
                 .level(level)
-                .displayName(identity.map(PlayerIdentity::displayName).orElse(allTime.displayName()))
+                .pseudonym(identity.map(PlayerIdentity::pseudonym).orElse(allTime.pseudonym()))
                 .avatarOptions(identity.map(PlayerIdentity::avatarOptions).orElse(allTime.avatarOptions()))
                 .country(identity.map(PlayerIdentity::country).orElse(allTime.country()))
                 .updatedAt(event.awardedAt())
@@ -85,7 +85,7 @@ public class TopicLeaderboardProjection {
         leaderboardRepositoryPort.saveMonthly(monthly.toBuilder()
                 .monthlyXp(monthly.monthlyXp() + event.xp())
                 .level(level)
-                .displayName(identity.map(PlayerIdentity::displayName).orElse(monthly.displayName()))
+                .pseudonym(identity.map(PlayerIdentity::pseudonym).orElse(monthly.pseudonym()))
                 .avatarOptions(identity.map(PlayerIdentity::avatarOptions).orElse(monthly.avatarOptions()))
                 .country(identity.map(PlayerIdentity::country).orElse(monthly.country()))
                 .updatedAt(event.awardedAt())
@@ -97,11 +97,26 @@ public class TopicLeaderboardProjection {
 
     @EventHandler
     @Transactional
-    public void on(ProfileEvent.ProfileUpdatedEvent event) {
-        leaderboardRepositoryPort.refreshIdentity(
-                event.userId(), event.displayName(), event.country(), event.avatarOptions());
+    public void on(ProfileEvent.ProfilePseudonymUpdatedEvent event) {
+        leaderboardRepositoryPort.refreshPseudonym(event.userId(), event.pseudonym());
 
-        logger.debug("Identité de classement rafraîchie: userId={}", event.userId());
+        logger.debug("Pseudonyme de classement rafraîchi: userId={}", event.userId());
+    }
+
+    @EventHandler
+    @Transactional
+    public void on(ProfileEvent.ProfileCountryUpdatedEvent event) {
+        leaderboardRepositoryPort.refreshCountry(event.userId(), event.country());
+
+        logger.debug("Pays de classement rafraîchi: userId={}", event.userId());
+    }
+
+    @EventHandler
+    @Transactional
+    public void on(ProfileEvent.ProfileAvatarUpdatedEvent event) {
+        leaderboardRepositoryPort.refreshAvatarOptions(event.userId(), event.avatarOptions());
+
+        logger.debug("Avatar de classement rafraîchi: userId={}", event.userId());
     }
 
     private Optional<PlayerIdentity> resolveIdentity(String userId) {

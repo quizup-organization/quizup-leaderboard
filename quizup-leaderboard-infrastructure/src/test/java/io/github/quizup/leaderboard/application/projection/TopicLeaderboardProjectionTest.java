@@ -54,7 +54,7 @@ class TopicLeaderboardProjectionTest {
         verify(repository).saveAllTime(allTime.capture());
         assertThat(allTime.getValue().totalXp()).isEqualTo(150);
         assertThat(allTime.getValue().level()).isEqualTo(2);
-        assertThat(allTime.getValue().displayName()).isEqualTo("Alicia");
+        assertThat(allTime.getValue().pseudonym()).isEqualTo("Alicia");
         assertThat(allTime.getValue().avatarOptions()).isEqualTo("{\"hair\":\"full\"}");
         assertThat(allTime.getValue().country()).isEqualTo("FR");
 
@@ -85,7 +85,7 @@ class TopicLeaderboardProjectionTest {
                 .userId("user-1")
                 .totalXp(30)
                 .level(1)
-                .displayName("Ancien nom")
+                .pseudonym("Ancien nom")
                 .country("BE")
                 .updatedAt(Instant.parse("2026-09-01T00:00:00Z"))
                 .build();
@@ -96,18 +96,33 @@ class TopicLeaderboardProjectionTest {
 
         ArgumentCaptor<TopicLeaderboardEntry> allTime = ArgumentCaptor.forClass(TopicLeaderboardEntry.class);
         verify(repository).saveAllTime(allTime.capture());
-        assertThat(allTime.getValue().displayName()).isEqualTo("Ancien nom");
+        assertThat(allTime.getValue().pseudonym()).isEqualTo("Ancien nom");
         assertThat(allTime.getValue().country()).isEqualTo("BE");
         assertThat(allTime.getValue().totalXp()).isEqualTo(180);
     }
 
     @Test
-    void profileUpdated_refreshesDenormalizedIdentity() {
-        projection.on(new ProfileEvent.ProfileUpdatedEvent(
-                "user-1", "user-1", "Alicia", "bio", "FR", "{\"hair\":\"full\"}",
-                Instant.parse("2026-09-20T10:00:00Z")));
+    void profilePseudonymUpdated_refreshesDenormalizedPseudonym() {
+        projection.on(new ProfileEvent.ProfilePseudonymUpdatedEvent(
+                "user-1", "user-1", "Alicia", Instant.parse("2026-09-20T10:00:00Z")));
 
-        verify(repository).refreshIdentity("user-1", "Alicia", "FR", "{\"hair\":\"full\"}");
+        verify(repository).refreshPseudonym("user-1", "Alicia");
+    }
+
+    @Test
+    void profileCountryUpdated_refreshesDenormalizedCountry() {
+        projection.on(new ProfileEvent.ProfileCountryUpdatedEvent(
+                "user-1", "user-1", "FR", Instant.parse("2026-09-20T10:00:00Z")));
+
+        verify(repository).refreshCountry("user-1", "FR");
+    }
+
+    @Test
+    void profileAvatarUpdated_refreshesDenormalizedAvatar() {
+        projection.on(new ProfileEvent.ProfileAvatarUpdatedEvent(
+                "user-1", "user-1", "{\"hair\":\"full\"}", Instant.parse("2026-09-20T10:00:00Z")));
+
+        verify(repository).refreshAvatarOptions("user-1", "{\"hair\":\"full\"}");
     }
 
     private ProgressionEvent.XpAwardedEvent xpAwarded(boolean botGame) {

@@ -55,9 +55,21 @@ public class TopicLeaderboardRepositoryAdapter implements LeaderboardRepositoryP
     }
 
     @Override
-    public void refreshIdentity(String userId, String displayName, String country, String avatarOptions) {
-        allTimeRepository.refreshIdentity(userId, displayName, country, avatarOptions);
-        monthlyRepository.refreshIdentity(userId, displayName, country, avatarOptions);
+    public void refreshPseudonym(String userId, String pseudonym) {
+        allTimeRepository.refreshPseudonym(userId, pseudonym);
+        monthlyRepository.refreshPseudonym(userId, pseudonym);
+    }
+
+    @Override
+    public void refreshCountry(String userId, String country) {
+        allTimeRepository.refreshCountry(userId, country);
+        monthlyRepository.refreshCountry(userId, country);
+    }
+
+    @Override
+    public void refreshAvatarOptions(String userId, String avatarOptions) {
+        allTimeRepository.refreshAvatarOptions(userId, avatarOptions);
+        monthlyRepository.refreshAvatarOptions(userId, avatarOptions);
     }
 
     @Override

@@ -21,7 +21,7 @@ public final class TopicLeaderboardEntryMapper {
                 .monthlyXp(0)
                 .month(null)
                 .level(entity.getLevel())
-                .displayName(entity.getDisplayName())
+                .pseudonym(entity.getPseudonym())
                 .avatarOptions(entity.getAvatarOptions())
                 .country(entity.getCountry())
                 .updatedAt(entity.getUpdatedAt())
@@ -37,7 +37,7 @@ public final class TopicLeaderboardEntryMapper {
                 .monthlyXp(entity.getMonthlyXp())
                 .month(entity.getMonth())
                 .level(entity.getLevel())
-                .displayName(entity.getDisplayName())
+                .pseudonym(entity.getPseudonym())
                 .avatarOptions(entity.getAvatarOptions())
                 .country(entity.getCountry())
                 .updatedAt(entity.getUpdatedAt())
@@ -51,7 +51,7 @@ public final class TopicLeaderboardEntryMapper {
         entity.setUserId(entry.userId());
         entity.setTotalXp(entry.totalXp());
         entity.setLevel(entry.level());
-        entity.setDisplayName(entry.displayName());
+        entity.setPseudonym(entry.pseudonym());
         entity.setAvatarOptions(entry.avatarOptions());
         entity.setCountry(entry.country());
         entity.setUpdatedAt(entry.updatedAt());
@@ -66,7 +66,7 @@ public final class TopicLeaderboardEntryMapper {
         entity.setMonth(entry.month());
         entity.setMonthlyXp(entry.monthlyXp());
         entity.setLevel(entry.level());
-        entity.setDisplayName(entry.displayName());
+        entity.setPseudonym(entry.pseudonym());
         entity.setAvatarOptions(entry.avatarOptions());
         entity.setCountry(entry.country());
         entity.setUpdatedAt(entry.updatedAt());

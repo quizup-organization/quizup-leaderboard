@@ -41,7 +41,7 @@ public class LeaderboardProfileService implements LeaderboardProfilePort {
                     .join().stream()
                     .map(profile -> new PlayerIdentity(
                             profile.userId(),
-                            profile.displayName(),
+                            profile.pseudonym(),
                             profile.country(),
                             profile.avatarOptions()))
                     .toList();

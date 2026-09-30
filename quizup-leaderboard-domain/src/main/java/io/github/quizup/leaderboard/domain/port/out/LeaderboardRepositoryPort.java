@@ -24,10 +24,16 @@ public interface LeaderboardRepositoryPort {
     Optional<TopicLeaderboardEntry> findMonthlyByTopicAndUser(String topicId, String userId, String month);
 
     /**
-     * Rafraîchit l'identité publique d'un joueur sur toutes ses entrées (all-time et mensuelles),
-     * quel que soit le thème — un changement de nom/pays/avatar ne fige jamais le classement.
+     * Rafraîchit le pseudonyme public d'un joueur sur toutes ses entrées (all-time et mensuelles),
+     * quel que soit le thème.
      */
-    void refreshIdentity(String userId, String displayName, String country, String avatarOptions);
+    void refreshPseudonym(String userId, String pseudonym);
+
+    /** Rafraîchit le pays d'un joueur sur toutes ses entrées (all-time et mensuelles). */
+    void refreshCountry(String userId, String country);
+
+    /** Rafraîchit les options d'avatar d'un joueur sur toutes ses entrées (all-time et mensuelles). */
+    void refreshAvatarOptions(String userId, String avatarOptions);
 
     /**
      * Page du classement d'un thème, filtrée par portée : {@code memberIds} (amis) et/ou

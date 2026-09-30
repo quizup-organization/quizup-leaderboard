@@ -39,8 +39,8 @@ public class TopicLeaderboardEntryEntity {
     @Column(name = "level", nullable = false)
     private int level;
 
-    @Column(name = "display_name", length = 255)
-    private String displayName;
+    @Column(name = "pseudonym", length = 255)
+    private String pseudonym;
 
     @Column(name = "avatar_options", columnDefinition = "text")
     private String avatarOptions;

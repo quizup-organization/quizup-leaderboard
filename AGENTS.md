@@ -45,7 +45,9 @@ exposée par le service.
 | Consommateur                  | Service source    | Event Axon consommé                 |
 |-------------------------------|-------------------|-------------------------------------|
 | `TopicLeaderboardProjection`  | `quizup-profile`  | `ProgressionEvent.XpAwardedEvent`   |
-| `TopicLeaderboardProjection`  | `quizup-profile`  | `ProfileEvent.ProfileUpdatedEvent`  |
+| `TopicLeaderboardProjection`  | `quizup-profile`  | `ProfileEvent.ProfilePseudonymUpdatedEvent` |
+| `TopicLeaderboardProjection`  | `quizup-profile`  | `ProfileEvent.ProfileCountryUpdatedEvent`   |
+| `TopicLeaderboardProjection`  | `quizup-profile`  | `ProfileEvent.ProfileAvatarUpdatedEvent`    |
 
 Dépendance Maven `quizup-profile-domain` (artifact). **Plus de saga ni d'agrégat relais** : la
 projection consomme directement les événements profile (pattern `ActivityProjection`), écrit
@@ -62,10 +64,11 @@ niveau et les badges du joueur, jamais pour le classement.
 - **Historique mensuel** : table `topic_leaderboard_monthly_entry` par `(thème, joueur, mois)` —
   chaque mois a sa ligne, jamais écrasée. `TopByTopicQuery`/`GetTopicRankQuery` prennent un
   `month` (`YYYY-MM`), `null` = mois courant. Backfill du mois courant à la migration V2.
-- **Identité/niveau dénormalisés** : `display_name`, `avatar_options`, `country` et `level` sont
+- **Identité/niveau dénormalisés** : `pseudonym`, `avatar_options`, `country` et `level` sont
   stockés sur les entrées (all-time et mensuelles) — plus aucune résolution de profil par page
-  côté BFF. `ProfileUpdatedEvent` rafraîchit l'identité sur toutes les entrées du joueur
-  (`refreshIdentity`), le pays ne fige donc jamais ; le niveau est recalculé à chaque XP.
+  côté BFF. Les événements de champ du profil rafraîchissent l'identité sur toutes les entrées du
+  joueur (`refreshPseudonym` / `refreshCountry` / `refreshAvatarOptions`), le pays ne fige donc
+  jamais ; le niveau est recalculé à chaque XP.
 
 ### Enrichissements front
 
