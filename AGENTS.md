@@ -3,7 +3,7 @@
 > Service de **classements par thème** : all-time (progression cumulée) et mensuel
 > (reset au 1er du mois). Architecture : Axon Framework (CQRS/EDA) + JPA (projection).
 > Pour les règles de patterns :
-> [`../../best-practices/.backend/hexagonal-architecture.md`](../../best-practices/.backend/hexagonal-architecture.md).
+> [`../../best-practices/.backend/folder-structure.md`](../../best-practices/.backend/folder-structure.md).
 
 ---
 
