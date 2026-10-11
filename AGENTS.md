@@ -80,4 +80,4 @@ niveau et les badges du joueur, jamais pour le classement.
   memberIds, country)` → `LeaderboardPage` (Specification dynamique) ; `GetTopicRankQuery` renvoie
   le rang **au-delà du top 100** via un `COUNT` des entrées classées avant le joueur
   (XP supérieure, départage `userId` identique à l'ordre de la page).
-- `SearchLobbyQuery`/recherches restent pour les futures surfaces d'administration.
+- `SearchRoomQuery`/recherches restent pour les futures surfaces d'administration.
