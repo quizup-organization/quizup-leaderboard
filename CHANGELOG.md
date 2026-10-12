@@ -1,3 +1,9 @@
+## [4.2.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v4.1.0...v4.2.0) (2026-10-12)
+
+### Features
+
+* **console:** consume quizup-sdk 4.6.0 (build-info + API interne event store/scheduled) ([17cb81d](https://github.com/quizup-organization/quizup-leaderboard/commit/17cb81d828283e86fae43bfaed867442bc19de60))
+
 ## [4.1.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v4.0.0...v4.1.0) (2026-10-12)
 
 ### Features
