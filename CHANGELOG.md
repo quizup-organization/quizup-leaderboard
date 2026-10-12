@@ -1,3 +1,9 @@
+## [4.3.1](https://github.com/quizup-organization/quizup-leaderboard/compare/v4.3.0...v4.3.1) (2026-10-12)
+
+### Bug Fixes
+
+* **leaderboard:** contrats profile 3.4.0 / social 5.2.0 (élagués) ([9fcf920](https://github.com/quizup-organization/quizup-leaderboard/commit/9fcf9205711b9ad033368004bea49971bffa7a3f))
+
 ## [4.3.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v4.2.0...v4.3.0) (2026-10-12)
 
 ### Features
