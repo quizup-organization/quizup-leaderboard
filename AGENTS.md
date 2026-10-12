@@ -44,17 +44,20 @@ exposée par le service.
 
 | Consommateur                  | Service source    | Event Axon consommé                 |
 |-------------------------------|-------------------|-------------------------------------|
+| `PlayerIdentityProjection`    | `quizup-profile`  | `ProfileEvent.ProfileCreatedEvent`  |
+| `PlayerIdentityProjection`    | `quizup-profile`  | `ProfileEvent.ProfilePseudonymUpdatedEvent` |
+| `PlayerIdentityProjection`    | `quizup-profile`  | `ProfileEvent.ProfileCountryUpdatedEvent`   |
+| `PlayerIdentityProjection`    | `quizup-profile`  | `ProfileEvent.ProfileAvatarUpdatedEvent`    |
 | `TopicLeaderboardProjection`  | `quizup-profile`  | `ProgressionEvent.XpAwardedEvent`   |
-| `TopicLeaderboardProjection`  | `quizup-profile`  | `ProfileEvent.ProfilePseudonymUpdatedEvent` |
-| `TopicLeaderboardProjection`  | `quizup-profile`  | `ProfileEvent.ProfileCountryUpdatedEvent`   |
-| `TopicLeaderboardProjection`  | `quizup-profile`  | `ProfileEvent.ProfileAvatarUpdatedEvent`    |
 
-Dépendance Maven `quizup-profile-domain` (artifact). **Plus de saga ni d'agrégat relais** : la
-projection consomme directement les événements profile (pattern `ActivityProjection`), écrit
+Dépendance Maven `quizup-profile-domain` (artifact). **Plus de saga ni d'agrégat relais** : les
+projections consomment directement les événements profile (pattern `ActivityProjection`), écrivent
 l'entrée all-time + l'entrée mensuelle, et l'idempotence par `(topicId, userId, gameId)` est portée
 par le journal `topic_leaderboard_awarded_game`. Aucun événement local n'est produit : l'event
 store du service ne croît plus avec les duels (lot C3, rétention résolue par suppression de
-l'écriture inutile).
+l'écriture inutile). **Aucune query cross-service dans une projection** : l'identité publique est
+matérialisée localement (voir ci-dessous), plus de `LeaderboardProfilePort` / `.join()` sur le
+thread du processor (`best-practices/.backend/anti-patterns.md` § 3).
 
 **Les duels contre bot (`XpAwardedEvent.botGame`) sont ignorés** : ils comptent pour l'XP, le
 niveau et les badges du joueur, jamais pour le classement.
@@ -66,16 +69,18 @@ niveau et les badges du joueur, jamais pour le classement.
   `month` (`YYYY-MM`), `null` = mois courant. Backfill du mois courant à la migration V2.
 - **Identité/niveau dénormalisés** : `pseudonym`, `avatar_options`, `country` et `level` sont
   stockés sur les entrées (all-time et mensuelles) — plus aucune résolution de profil par page
-  côté BFF. Les événements de champ du profil rafraîchissent l'identité sur toutes les entrées du
-  joueur (`refreshPseudonym` / `refreshCountry` / `refreshAvatarOptions`), le pays ne fige donc
+  côté BFF. **Read model local `player_identity_entry` (migration V3)** alimenté par
+  `PlayerIdentityProjection` (`ProfileCreatedEvent` + événements de champ) : les projections et la
+  portée pays lisent l'identité en local, sans query cross-service bloquante. Les `refreshXxx` sur
+  les entrées restent (les autres entrées du joueur sont mises à jour), le pays ne fige donc
   jamais ; le niveau est recalculé à chaque XP.
 
 ### Enrichissements front
 
 - **Portées** `scope=world|following|country` (alias historique `friends`) : abonnements via
   `LeaderboardFollowingPort` (`quizup-social-domain`, query dédiée `GetUserFollowsQuery`), pays
-  filtré sur le `country` dénormalisé ; la portée pays résout uniquement le pays du demandeur via
-  `LeaderboardProfilePort` (requête batch `GetProfilesByIdsQuery`).
+  filtré sur le `country` dénormalisé ; la portée pays résout le pays du demandeur dans le read
+  model local `PlayerIdentityRepositoryPort` (éventuellement cohérent — repli : pas de filtre).
 - **Pagination et rang sans scan borné** : `TopByTopicQuery(topicId, monthly, month, page, size,
   memberIds, country)` → `LeaderboardPage` (Specification dynamique) ; `GetTopicRankQuery` renvoie
   le rang **au-delà du top 100** via un `COUNT` des entrées classées avant le joueur

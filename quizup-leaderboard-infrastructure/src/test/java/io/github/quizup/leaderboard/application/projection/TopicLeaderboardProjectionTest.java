@@ -3,15 +3,14 @@ package io.github.quizup.leaderboard.application.projection;
 import io.github.quizup.leaderboard.domain.model.PlayerIdentity;
 import io.github.quizup.leaderboard.domain.model.TopicLeaderboardEntry;
 import io.github.quizup.leaderboard.domain.port.out.LeaderboardAwardedGameRepositoryPort;
-import io.github.quizup.leaderboard.domain.port.out.LeaderboardProfilePort;
 import io.github.quizup.leaderboard.domain.port.out.LeaderboardRepositoryPort;
+import io.github.quizup.leaderboard.domain.port.out.PlayerIdentityRepositoryPort;
 import io.github.quizup.profile.domain.event.ProfileEvent;
 import io.github.quizup.profile.domain.event.ProgressionEvent;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,16 +25,16 @@ class TopicLeaderboardProjectionTest {
 
     private final LeaderboardRepositoryPort repository = mock(LeaderboardRepositoryPort.class);
     private final LeaderboardAwardedGameRepositoryPort awardedGames = mock(LeaderboardAwardedGameRepositoryPort.class);
-    private final LeaderboardProfilePort profiles = mock(LeaderboardProfilePort.class);
+    private final PlayerIdentityRepositoryPort playerIdentities = mock(PlayerIdentityRepositoryPort.class);
 
     private final TopicLeaderboardProjection projection =
-            new TopicLeaderboardProjection(repository, awardedGames, profiles);
+            new TopicLeaderboardProjection(repository, awardedGames, playerIdentities);
 
     @Test
     void botGame_isNotRanked() {
         projection.on(xpAwarded(true));
 
-        verifyNoInteractions(awardedGames, profiles);
+        verifyNoInteractions(awardedGames, playerIdentities);
         verify(repository, never()).saveAllTime(any());
         verify(repository, never()).saveMonthly(any());
     }
@@ -43,8 +42,8 @@ class TopicLeaderboardProjectionTest {
     @Test
     void firstAward_writesAllTimeAndMonthlyEntries() {
         when(awardedGames.record("topic-1", "user-1", "game-1")).thenReturn(true);
-        when(profiles.findIdentities(List.of("user-1")))
-                .thenReturn(List.of(new PlayerIdentity("user-1", "Alicia", "FR", "{\"hair\":\"full\"}")));
+        when(playerIdentities.findById("user-1"))
+                .thenReturn(Optional.of(new PlayerIdentity("user-1", "Alicia", "FR", "{\"hair\":\"full\"}")));
         when(repository.findByTopicAndUser("topic-1", "user-1")).thenReturn(Optional.empty());
         when(repository.findMonthlyByTopicAndUser("topic-1", "user-1", "2026-09")).thenReturn(Optional.empty());
 
@@ -78,7 +77,7 @@ class TopicLeaderboardProjectionTest {
     @Test
     void unresolvedProfile_keepsStoredIdentity() {
         when(awardedGames.record("topic-1", "user-1", "game-1")).thenReturn(true);
-        when(profiles.findIdentities(List.of("user-1"))).thenReturn(List.of());
+        when(playerIdentities.findById("user-1")).thenReturn(Optional.empty());
         TopicLeaderboardEntry stored = TopicLeaderboardEntry.builder()
                 .entryId("topic-1::user-1")
                 .topicId("topic-1")

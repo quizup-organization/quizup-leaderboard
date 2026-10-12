@@ -9,7 +9,7 @@ import io.github.quizup.leaderboard.domain.model.PlayerIdentity;
 import io.github.quizup.leaderboard.domain.model.TopicLeaderboardEntry;
 import io.github.quizup.leaderboard.domain.port.in.GetLeaderboardUseCase;
 import io.github.quizup.leaderboard.domain.port.out.LeaderboardFollowingPort;
-import io.github.quizup.leaderboard.domain.port.out.LeaderboardProfilePort;
+import io.github.quizup.leaderboard.domain.port.out.PlayerIdentityRepositoryPort;
 import io.github.quizup.leaderboard.domain.query.LeaderboardQuery;
 import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.stereotype.Service;
@@ -25,20 +25,21 @@ import java.util.concurrent.CompletableFuture;
  * Service applicatif — implémente {@link GetLeaderboardUseCase}.
  *
  * <p>Résout la portée (monde / amis / pays) ; l'identité et le niveau des entrées sont déjà
- * dénormalisés dans le read model (aucune résolution de profil par page).</p>
+ * dénormalisés dans le read model, et le pays du demandeur est lu dans le read model local
+ * ({@link PlayerIdentityRepositoryPort}) — aucune résolution de profil cross-service bloquante.</p>
  */
 @Service
 public class LeaderboardQueryService implements GetLeaderboardUseCase {
 
     private final QueryGateway queryGateway;
-    private final LeaderboardProfilePort leaderboardProfilePort;
+    private final PlayerIdentityRepositoryPort playerIdentityRepositoryPort;
     private final LeaderboardFollowingPort leaderboardFollowingPort;
 
     public LeaderboardQueryService(QueryGateway queryGateway,
-                                   LeaderboardProfilePort leaderboardProfilePort,
+                                   PlayerIdentityRepositoryPort playerIdentityRepositoryPort,
                                    LeaderboardFollowingPort leaderboardFollowingPort) {
         this.queryGateway = queryGateway;
-        this.leaderboardProfilePort = leaderboardProfilePort;
+        this.playerIdentityRepositoryPort = playerIdentityRepositoryPort;
         this.leaderboardFollowingPort = leaderboardFollowingPort;
     }
 
@@ -94,9 +95,8 @@ public class LeaderboardQueryService implements GetLeaderboardUseCase {
             return new ScopeFilter(new ArrayList<>(memberIds), null);
         }
 
-        String country = leaderboardProfilePort.findIdentities(List.of(requesterId)).stream()
+        String country = playerIdentityRepositoryPort.findById(requesterId)
                 .map(PlayerIdentity::country)
-                .findFirst()
                 .orElse(null);
 
         return country == null ? new ScopeFilter(null, null) : new ScopeFilter(null, country);

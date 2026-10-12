@@ -4,8 +4,8 @@ import io.github.quizup.leaderboard.domain.model.PlayerIdentity;
 import io.github.quizup.leaderboard.domain.model.TopicLeaderboardEntry;
 import io.github.quizup.leaderboard.domain.model.LeaderboardRules;
 import io.github.quizup.leaderboard.domain.port.out.LeaderboardAwardedGameRepositoryPort;
-import io.github.quizup.leaderboard.domain.port.out.LeaderboardProfilePort;
 import io.github.quizup.leaderboard.domain.port.out.LeaderboardRepositoryPort;
+import io.github.quizup.leaderboard.domain.port.out.PlayerIdentityRepositoryPort;
 import io.github.quizup.profile.domain.event.ProfileEvent;
 import io.github.quizup.profile.domain.event.ProgressionEvent;
 import org.axonframework.config.ProcessingGroup;
@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -25,8 +24,9 @@ import java.util.Optional;
  * <p>Consomme directement {@link ProgressionEvent.XpAwardedEvent} (l'ancien agrégat relais a été
  * supprimé : plus aucun événement local n'est écrit, l'event store ne croît plus avec les duels).
  * Les duels contre bot sont ignorés. L'identité publique (pseudonyme, avatar, pays) et le niveau
- * sont dénormalisés dans le read model ; les événements de champ du profil les rafraîchissent pour
- * qu'un changement de profil ne fige jamais le classement.</p>
+ * sont dénormalisés dans le read model ; l'identité est lue <b>en local</b>
+ * ({@link PlayerIdentityRepositoryPort}, alimenté par les événements profil) — aucune query
+ * cross-service bloquante sur le thread de l'event processor.</p>
  */
 @Component
 @ProcessingGroup("topic-leaderboard-projection")
@@ -36,14 +36,14 @@ public class TopicLeaderboardProjection {
 
     private final LeaderboardRepositoryPort leaderboardRepositoryPort;
     private final LeaderboardAwardedGameRepositoryPort awardedGameRepositoryPort;
-    private final LeaderboardProfilePort leaderboardProfilePort;
+    private final PlayerIdentityRepositoryPort playerIdentityRepositoryPort;
 
     public TopicLeaderboardProjection(LeaderboardRepositoryPort leaderboardRepositoryPort,
                                       LeaderboardAwardedGameRepositoryPort awardedGameRepositoryPort,
-                                      LeaderboardProfilePort leaderboardProfilePort) {
+                                      PlayerIdentityRepositoryPort playerIdentityRepositoryPort) {
         this.leaderboardRepositoryPort = leaderboardRepositoryPort;
         this.awardedGameRepositoryPort = awardedGameRepositoryPort;
-        this.leaderboardProfilePort = leaderboardProfilePort;
+        this.playerIdentityRepositoryPort = playerIdentityRepositoryPort;
     }
 
     @EventHandler
@@ -120,11 +120,6 @@ public class TopicLeaderboardProjection {
     }
 
     private Optional<PlayerIdentity> resolveIdentity(String userId) {
-        try {
-            return leaderboardProfilePort.findIdentities(List.of(userId)).stream().findFirst();
-        } catch (Exception exception) {
-            logger.warn("Profil introuvable pour {} : {}", userId, exception.getMessage());
-            return Optional.empty();
-        }
+        return playerIdentityRepositoryPort.findById(userId);
     }
 }
