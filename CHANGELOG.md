@@ -1,3 +1,9 @@
+## [4.3.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v4.2.0...v4.3.0) (2026-10-12)
+
+### Features
+
+* **console:** consume quizup-sdk 4.7.0 (lag, commandes en vol, snapshots, scheduled) ([6f043cb](https://github.com/quizup-organization/quizup-leaderboard/commit/6f043cb802488d0694e410130f54d151e6fb68c1))
+
 ## [4.2.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v4.1.0...v4.2.0) (2026-10-12)
 
 ### Features
