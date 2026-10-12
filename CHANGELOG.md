@@ -1,3 +1,13 @@
+## [4.0.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v3.0.0...v4.0.0) (2026-10-12)
+
+### ⚠ BREAKING CHANGES
+
+* **leaderboard:** LeaderboardProfilePort retiré du domaine leaderboard.
+
+### Code Refactoring
+
+* **leaderboard:** identité locale (fin du join dans la projection) ([f2356a2](https://github.com/quizup-organization/quizup-leaderboard/commit/f2356a2fc2f756fa6c1543b1bdcfb3a84fbdb9b4))
+
 ## [3.0.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v2.1.0...v3.0.0) (2026-09-30)
 
 ### ⚠ BREAKING CHANGES
