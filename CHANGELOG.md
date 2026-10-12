@@ -1,3 +1,9 @@
+## [4.1.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v4.0.0...v4.1.0) (2026-10-12)
+
+### Features
+
+* **console:** consume quizup-sdk 4.5.2 (DLQ Axon par défaut + agent console) ([a2ebd31](https://github.com/quizup-organization/quizup-leaderboard/commit/a2ebd31637828486958b0ebcfe9668a00ec74223))
+
 ## [4.0.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v3.0.0...v4.0.0) (2026-10-12)
 
 ### ⚠ BREAKING CHANGES
