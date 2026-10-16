@@ -59,8 +59,9 @@ l'écriture inutile). **Aucune query cross-service dans une projection** : l'ide
 matérialisée localement (voir ci-dessous), plus de `LeaderboardProfilePort` / `.join()` sur le
 thread du processor (`best-practices/.backend/anti-patterns.md` § 3).
 
-**Les duels contre bot (`XpAwardedEvent.botGame`) sont ignorés** : ils comptent pour l'XP, le
-niveau et les badges du joueur, jamais pour le classement.
+**Les duels contre bot (`XpAwardedEvent.botGame`) sont ignorés** : ils ne comptent **ni** pour l'XP
+du joueur (0 XP en entraînement), **ni** pour les badges ou les titres (acquisition réservée aux
+**parties contre des humains**, cf. `quizup-profile`), **ni** pour le classement.
 
 ### Modèle de lecture (lot C3)
 
