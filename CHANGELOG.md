@@ -1,3 +1,9 @@
+## [4.4.2](https://github.com/quizup-organization/quizup-leaderboard/compare/v4.4.1...v4.4.2) (2026-10-22)
+
+### Bug Fixes
+
+* **leaderboard:** aligne le test sur le contrat profile 4.10.0 ([a4fc126](https://github.com/quizup-organization/quizup-leaderboard/commit/a4fc126536c3068348637474141aee6e0483bb3e))
+
 ## [4.4.1](https://github.com/quizup-organization/quizup-leaderboard/compare/v4.4.0...v4.4.1) (2026-10-22)
 
 ### Bug Fixes
