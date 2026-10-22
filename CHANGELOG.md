@@ -1,3 +1,9 @@
+## [4.4.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v4.3.1...v4.4.0) (2026-10-22)
+
+### Features
+
+* **account:** retire le compte supprimé des classements ([f0f0844](https://github.com/quizup-organization/quizup-leaderboard/commit/f0f08445b907f87dbd905aba52f50f528d420145))
+
 ## [4.3.1](https://github.com/quizup-organization/quizup-leaderboard/compare/v4.3.0...v4.3.1) (2026-10-12)
 
 ### Bug Fixes
