@@ -126,7 +126,8 @@ class TopicLeaderboardProjectionTest {
 
     private ProgressionEvent.XpAwardedEvent xpAwarded(boolean botGame) {
         return new ProgressionEvent.XpAwardedEvent(
-                "user-1", "game-1", "topic-1", 150, 100, true, false, botGame, 5, 3,
-                Instant.parse("2026-09-15T10:00:00Z"));
+                "user-1", "game-1", "topic-1", 150, 100, true, false, botGame, 5, 3, 0,
+                Instant.parse("2026-09-15T10:00:00Z"),
+                200, 200, 1, false, 0, null, null);
     }
 }
