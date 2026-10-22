@@ -1,3 +1,9 @@
+## [4.4.1](https://github.com/quizup-organization/quizup-leaderboard/compare/v4.4.0...v4.4.1) (2026-10-22)
+
+### Bug Fixes
+
+* aligne les contrats inter-services sur les releases disponibles ([ccea015](https://github.com/quizup-organization/quizup-leaderboard/commit/ccea015fad2048533dad37329e1f64eb0c327932))
+
 ## [4.4.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v4.3.1...v4.4.0) (2026-10-22)
 
 ### Features
