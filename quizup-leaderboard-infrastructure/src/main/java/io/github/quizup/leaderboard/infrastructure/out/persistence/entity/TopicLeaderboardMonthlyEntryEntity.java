@@ -39,9 +39,6 @@ public class TopicLeaderboardMonthlyEntryEntity {
     @Column(name = "monthly_xp", nullable = false)
     private int monthlyXp;
 
-    @Column(name = "level", nullable = false)
-    private int level;
-
     @Column(name = "pseudonym", length = 255)
     private String pseudonym;
 

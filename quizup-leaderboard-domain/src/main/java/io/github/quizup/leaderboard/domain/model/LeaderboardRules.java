@@ -5,12 +5,9 @@ import java.time.YearMonth;
 import java.time.ZoneOffset;
 
 /**
- * Règles pures du classement : clé de mois (reset mensuel) et niveau dérivé
- * de l'XP totale (même barème que la progression `quizup-profile`).
+ * Règles pures du classement : clé de mois (reset mensuel) et identifiants d'entrées.
  */
 public final class LeaderboardRules {
-
-    private static final int XP_PER_LEVEL_UNIT = 100;
 
     private LeaderboardRules() {
     }
@@ -44,14 +41,5 @@ public final class LeaderboardRules {
      */
     public static String monthlyEntryId(String topicId, String userId, String month) {
         return topicId + "::" + userId + "::" + month;
-    }
-
-    /** Niveau atteint pour une XP totale cumulée (démarre à 1). */
-    public static int levelFor(int xpTotal) {
-        if (xpTotal <= 0) {
-            return 1;
-        }
-
-        return 1 + (int) Math.floor(Math.sqrt(xpTotal / (double) XP_PER_LEVEL_UNIT));
     }
 }

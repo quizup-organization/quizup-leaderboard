@@ -14,7 +14,7 @@ excellent en géographie ne fait pas monter au classement cinéma). L'XP d'un du
 (`XpAwardedEvent` de `quizup-profile`) alimente l'entrée `(thème, joueur)`.
 
 Deux horizons :
-- **All-time** : XP cumulée dans le thème (détermine le niveau et la position).
+- **All-time** : XP cumulée dans le thème (détermine la position ; l'Elo reste la seule métrique joueur).
 - **Mensuel** : XP du mois (`YYYY-MM`), **historique conservé** — chaque mois a sa propre ligne,
   consultable via le paramètre `month` de la surface BFF.
 
@@ -68,13 +68,13 @@ du joueur (0 XP en entraînement), **ni** pour les badges ou les titres (acquisi
 - **Historique mensuel** : table `topic_leaderboard_monthly_entry` par `(thème, joueur, mois)` —
   chaque mois a sa ligne, jamais écrasée. `TopByTopicQuery`/`GetTopicRankQuery` prennent un
   `month` (`YYYY-MM`), `null` = mois courant. Backfill du mois courant à la migration V2.
-- **Identité/niveau dénormalisés** : `pseudonym`, `avatar_options`, `country` et `level` sont
+- **Identité dénormalisée** : `pseudonym`, `avatar_options`, `country` sont
   stockés sur les entrées (all-time et mensuelles) — plus aucune résolution de profil par page
   côté BFF. **Read model local `player_identity_entry` (migration V3)** alimenté par
   `PlayerIdentityProjection` (`ProfileCreatedEvent` + événements de champ) : les projections et la
   portée pays lisent l'identité en local, sans query cross-service bloquante. Les `refreshXxx` sur
   les entrées restent (les autres entrées du joueur sont mises à jour), le pays ne fige donc
-  jamais ; le niveau est recalculé à chaque XP.
+  jamais ; seul le total d'XP du thème est recalculé à chaque attribution.
 
 ### Enrichissements front
 

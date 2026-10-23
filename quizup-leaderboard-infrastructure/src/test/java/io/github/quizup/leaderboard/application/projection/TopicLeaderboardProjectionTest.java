@@ -52,7 +52,6 @@ class TopicLeaderboardProjectionTest {
         ArgumentCaptor<TopicLeaderboardEntry> allTime = ArgumentCaptor.forClass(TopicLeaderboardEntry.class);
         verify(repository).saveAllTime(allTime.capture());
         assertThat(allTime.getValue().totalXp()).isEqualTo(150);
-        assertThat(allTime.getValue().level()).isEqualTo(2);
         assertThat(allTime.getValue().pseudonym()).isEqualTo("Alicia");
         assertThat(allTime.getValue().avatarOptions()).isEqualTo("{\"hair\":\"full\"}");
         assertThat(allTime.getValue().country()).isEqualTo("FR");
@@ -61,7 +60,6 @@ class TopicLeaderboardProjectionTest {
         verify(repository).saveMonthly(monthly.capture());
         assertThat(monthly.getValue().month()).isEqualTo("2026-09");
         assertThat(monthly.getValue().monthlyXp()).isEqualTo(150);
-        assertThat(monthly.getValue().level()).isEqualTo(2);
     }
 
     @Test
@@ -83,7 +81,6 @@ class TopicLeaderboardProjectionTest {
                 .topicId("topic-1")
                 .userId("user-1")
                 .totalXp(30)
-                .level(1)
                 .pseudonym("Ancien nom")
                 .country("BE")
                 .updatedAt(Instant.parse("2026-09-01T00:00:00Z"))

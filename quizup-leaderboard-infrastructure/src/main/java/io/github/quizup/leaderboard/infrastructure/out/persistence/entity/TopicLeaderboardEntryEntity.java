@@ -36,9 +36,6 @@ public class TopicLeaderboardEntryEntity {
     @Column(name = "total_xp", nullable = false)
     private int totalXp;
 
-    @Column(name = "level", nullable = false)
-    private int level;
-
     @Column(name = "pseudonym", length = 255)
     private String pseudonym;
 

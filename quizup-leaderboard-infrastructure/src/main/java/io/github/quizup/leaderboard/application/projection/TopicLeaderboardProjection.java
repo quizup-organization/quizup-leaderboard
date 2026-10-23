@@ -67,11 +67,9 @@ public class TopicLeaderboardProjection {
                 .findByTopicAndUser(event.topicId(), event.userId())
                 .orElseGet(() -> TopicLeaderboardEntry.empty(event.topicId(), event.userId()));
         int totalXp = allTime.totalXp() + event.xp();
-        int level = LeaderboardRules.levelFor(totalXp);
 
         leaderboardRepositoryPort.saveAllTime(allTime.toBuilder()
                 .totalXp(totalXp)
-                .level(level)
                 .pseudonym(identity.map(PlayerIdentity::pseudonym).orElse(allTime.pseudonym()))
                 .avatarOptions(identity.map(PlayerIdentity::avatarOptions).orElse(allTime.avatarOptions()))
                 .country(identity.map(PlayerIdentity::country).orElse(allTime.country()))
@@ -84,7 +82,6 @@ public class TopicLeaderboardProjection {
 
         leaderboardRepositoryPort.saveMonthly(monthly.toBuilder()
                 .monthlyXp(monthly.monthlyXp() + event.xp())
-                .level(level)
                 .pseudonym(identity.map(PlayerIdentity::pseudonym).orElse(monthly.pseudonym()))
                 .avatarOptions(identity.map(PlayerIdentity::avatarOptions).orElse(monthly.avatarOptions()))
                 .country(identity.map(PlayerIdentity::country).orElse(monthly.country()))

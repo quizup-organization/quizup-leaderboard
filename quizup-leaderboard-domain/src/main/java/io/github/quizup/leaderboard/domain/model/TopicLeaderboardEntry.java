@@ -9,8 +9,7 @@ import java.time.Instant;
  *
  * <p>Deux lignes par joueur : l'entrée all-time ({@code month == null}, {@code totalXp} + identité
  * dénormalisée) et une entrée par mois ({@code month != null}, {@code monthlyXp}) qui conserve
- * l'historique des mois passés. {@code level} est dénormalisé (niveau = f(totalXp) au dernier
- * enregistrement) pour que les pages mensuelles n'aient pas à résoudre la progression.</p>
+ * l'historique des mois passés.</p>
  */
 @Builder(toBuilder = true)
 public record TopicLeaderboardEntry(
@@ -20,7 +19,6 @@ public record TopicLeaderboardEntry(
         int totalXp,
         int monthlyXp,
         String month,
-        int level,
         Instant updatedAt,
         String pseudonym,
         String avatarOptions,
@@ -35,7 +33,6 @@ public record TopicLeaderboardEntry(
                 .totalXp(0)
                 .monthlyXp(0)
                 .month(null)
-                .level(1)
                 .updatedAt(Instant.now())
                 .build();
     }
@@ -48,7 +45,6 @@ public record TopicLeaderboardEntry(
                 .totalXp(0)
                 .monthlyXp(0)
                 .month(month)
-                .level(1)
                 .updatedAt(Instant.now())
                 .build();
     }
