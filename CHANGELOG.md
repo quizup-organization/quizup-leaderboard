@@ -1,3 +1,13 @@
+## [5.0.0](https://github.com/quizup-organization/quizup-leaderboard/compare/v4.4.2...v5.0.0) (2026-10-23)
+
+### ⚠ BREAKING CHANGES
+
+* **leaderboard:** supprime le niveau global des classements
+
+### Code Refactoring
+
+* **leaderboard:** supprime le niveau global des classements ([f4f035e](https://github.com/quizup-organization/quizup-leaderboard/commit/f4f035eb3628b84b3683eed10dcc5c962c0bf23d))
+
 ## [4.4.2](https://github.com/quizup-organization/quizup-leaderboard/compare/v4.4.1...v4.4.2) (2026-10-22)
 
 ### Bug Fixes
